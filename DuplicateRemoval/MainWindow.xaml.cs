@@ -12,6 +12,10 @@ using ImageMagick;
 using K4os.Hash.xxHash;
 using WindowsAPICodePack.Dialogs;
 using WpfAnimatedGif;
+using Directory = Alphaleonis.Win32.Filesystem.Directory;
+using File = Alphaleonis.Win32.Filesystem.File;
+using FileInfo = Alphaleonis.Win32.Filesystem.FileInfo;
+using Path = Alphaleonis.Win32.Filesystem.Path;
 
 namespace DuplicateRemoval;
 
@@ -52,10 +56,9 @@ public partial class MainWindow : AdonisWindow
         _mainWindowModel.FirstInstances.Clear();
         _mainWindowModel.Duplicates.Clear();
 
-        EnumerationOptions options = new EnumerationOptions { RecurseSubdirectories = true };
         ConcurrentBag<FileEntry> entries = new ConcurrentBag<FileEntry>();
 
-        Parallel.ForEach(Directory.EnumerateFiles(_mainWindowModel.FolderPath, "*", options), file =>
+        Parallel.ForEach(Directory.EnumerateFiles(_mainWindowModel.FolderPath, "*", System.IO.SearchOption.AllDirectories), file =>
         {
             FileInfo fileInfo = new FileInfo(file);
             ulong hash;
